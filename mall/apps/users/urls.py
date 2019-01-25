@@ -2,7 +2,7 @@ from django.conf.urls import url, include
 from rest_framework.routers import DefaultRouter
 from rest_framework_jwt.views import obtain_jwt_token
 
-./from . import views
+from . import views
 
 router = DefaultRouter()
 router.register(r'addresses', views.AddAdddress, base_name='address')
