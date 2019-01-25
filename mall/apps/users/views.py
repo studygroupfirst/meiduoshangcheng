@@ -15,10 +15,10 @@ from users.models import User, Address
 from users.serializers import RegisterCreateSerializer, EmailSerializer, AddAddressSerializer, AddressTitleSerializer, \
     SKUSerializer
 from rest_framework.generics import RetrieveAPIView
-
+from rest_framework.permissions import IsAuthenticated
 from .serializers import UserDetailSerializer
 # Create your views here.
-
+import requests
 
 class RejisterUsernameCountAPIView(APIView):
 
@@ -246,12 +246,10 @@ class UserPassWordView(APIView):
 
             data = request.data
             user = User.objects.get(id=user_pwd)
+            # 查看就密码正确性
             if not user.check_password(data['old_password']):
                 raise Exception('原密码错误')
-            # len = data['password'].length
-            # if 20 < len < 8:
-            #     raise Exception('长度不正确')
-            # else:
+            # 判断新密码是否一致
             if data['password'] != data['password2']:
                 raise Response('{"status":"fail", "msg":"密码不一致"}', content_type="application/json")
                 # 密码加密保存
