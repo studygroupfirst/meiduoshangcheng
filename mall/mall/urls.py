@@ -13,7 +13,7 @@ Including another URLconf
     1. Import the include() function: from django.conf.urls import url, include
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
-import xadmin
+# import xadmin
 from django.conf.urls import url, include
 from django.contrib import admin
 from rest_framework_jwt.views import obtain_jwt_token
@@ -31,5 +31,5 @@ urlpatterns = [
     url(r'^cart/', include('carts.urls')),
     url(r'^orders/',include('orders.urls')),
     url(r'^pay/',include('pay.urls', namespace='pay')),
-    url(r'xadmin/', include(xadmin.site.urls)),
+    # url(r'xadmin/', include(xadmin.site.urls)),
 ]

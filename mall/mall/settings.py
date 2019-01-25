@@ -62,10 +62,10 @@ INSTALLED_APPS = [
     'django_crontab',  # 定时任务
 
     'haystack',
-
-    'xadmin',
-    'crispy_forms',
-    'reversion',
+    # xadmin 应用安装
+    # 'xadmin',
+    # 'crispy_forms',
+    # 'reversion',
 ]
 
 MIDDLEWARE = [
@@ -263,7 +263,7 @@ JWT_AUTH = {
     'JWT_RESPONSE_PAYLOAD_HANDLER': 'utils.users.jwt_response_payload_handler',
 }
 
-AUTHENTICATION_BACKENDS = [
+AUTHENTICATION_BAKENDS = [
    'utils.users.UsernameMobileAuthBackend',
 ]
 

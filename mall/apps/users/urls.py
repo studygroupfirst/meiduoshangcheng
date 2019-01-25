@@ -2,7 +2,7 @@ from django.conf.urls import url, include
 from rest_framework.routers import DefaultRouter
 from rest_framework_jwt.views import obtain_jwt_token
 
-from . import views
+./from . import views
 
 router = DefaultRouter()
 router.register(r'addresses', views.AddAdddress, base_name='address')
@@ -17,7 +17,8 @@ urlpatterns = [
     url(r'emails/verification/', views.VerificationEmailView.as_view()),
     # url(r'^', include(router.urls)),
     url(r'^browerhistories/$', views.UserBrowsingHistoryView.as_view(), name='history'),
-
+    # /users/'+vm.user_id+'/password/',
+    url(r'^(?P<user_pwd>\d+)/password/$',views.UserPassWordView.as_view()),
 ]
 urlpatterns += router.urls
 
