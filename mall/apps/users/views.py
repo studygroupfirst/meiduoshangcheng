@@ -18,7 +18,7 @@ from rest_framework.generics import RetrieveAPIView
 
 from .serializers import UserDetailSerializer
 # Create your views here.
-from
+
 
 class RejisterUsernameCountAPIView(APIView):
 
