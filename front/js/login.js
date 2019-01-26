@@ -89,7 +89,7 @@ var vm = new Vue({
                     withCredentials: true
                 })
                 .then(response => {
-                    location.href = response.data.auth_url;
+                    location.href = response.data.login_url;
                 })
                 .catch(error => {
                     console.log(error.response.data);

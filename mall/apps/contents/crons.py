@@ -99,7 +99,6 @@ def generate_static_index_html():
 
             # 组织数据
             categories[group_id]['sub_cats'].append(two)
-    print('1')
     # 广告和首页数据
     contents = {}
     content_categories = ContentCategory.objects.all()
@@ -115,23 +114,16 @@ def generate_static_index_html():
         'categories': categories,
         'contents': contents
     }
-    print(categories)
-    print(context)
-    print('2')
     # 1. 获取模板
     # get_template 会到系统的模板文件夹中 加载指定的模板
     template = loader.get_template('index.html')
-    print('2.1', template)
     #2. 渲染数据,渲染之后会 生成 html数据
     html_data = template.render(context)
-    print('2.2')
     #3. 指定写入路径
     file_path = os.path.join(settings.GENERATED_STATIC_HTML_FILES_DIR, 'index.html')
-    print('3')
     #4. 写入
     with open(file_path, 'w') as f:
         f.write(html_data)
-    print('over')
 
     # 使用有序字典保存类别的顺序
 
