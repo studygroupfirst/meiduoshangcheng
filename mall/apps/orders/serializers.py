@@ -222,14 +222,15 @@ class OrderSerializer(serializers.ModelSerializer):
         return order
 
 
-class SKUSerializer(serializers.ModelSerializer):
+<<<<<<< HEAD
+class SKUInfoSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = SKU
         fields = ('id', 'name', 'price', 'default_image_url', 'comments')
 class OrderGoodsSerializer(serializers.ModelSerializer):
 
-    sku = SKUSerializer()
+    sku = SKUInfoSerializer()
     class Meta:
         model = OrderGoods
         fields = ('sku', 'count', 'price', 'is_commented')
@@ -245,3 +246,24 @@ class UserInfoOrderSerializer(serializers.ModelSerializer):
         #                     'total_amount', 'total_count']
 
 
+=======
+class SkuSerializer(serializers.ModelSerializer):
+
+
+    class Meta:
+        model = SKU
+        fields = ('name', 'default_image_url','id')
+
+
+class ScoreOrderSerializer(serializers.ModelSerializer):
+    sku = SkuSerializer()
+    class Meta:
+        model = OrderGoods
+        fields = ('sku','comment','price','is_anonymous')
+
+class CommentSerializer(serializers.ModelSerializer):
+    # sku = SkuSerializer()
+    class Meta:
+        model = OrderGoods
+        fields = ('score','comment','is_anonymous')
+>>>>>>> 621091304585efefc60e9bd0f5bb3f33045bb9c8

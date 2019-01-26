@@ -14,8 +14,13 @@ from rest_framework.views import APIView
 from rest_framework.viewsets import GenericViewSet
 
 from goods.models import SKU
+<<<<<<< HEAD
 from orders.models import OrderInfo
 from orders.serializers import OrderPlaceSerializer, OrderSerializer, UserInfoOrderSerializer
+=======
+from orders.models import OrderGoods
+from orders.serializers import OrderPlaceSerializer, OrderSerializer, ScoreOrderSerializer, CommentSerializer
+>>>>>>> 621091304585efefc60e9bd0f5bb3f33045bb9c8
 
 
 class PlaceOrderAPIView(APIView):
@@ -53,6 +58,7 @@ class OrderAPIViewSet(mixins.CreateModelMixin, mixins.ListModelMixin, GenericVie
 
     permission_classes = [IsAuthenticated]
 
+<<<<<<< HEAD
     def get_serializer(self, *args, **kwargs):
 
         if self.action == 'create':
@@ -110,3 +116,24 @@ data{
     count, resutls,
 }
 """
+=======
+
+
+class ScoreOrderView(APIView):
+    def get(self,request,order_id):
+        skus =OrderGoods.objects.filter(order_id__exact=order_id)
+        serializers =  ScoreOrderSerializer(skus,many=True)
+        return Response(serializers.data)
+
+class CommentView(APIView):
+    def post(self,request,order_id):
+        data = request.data
+        del data['order']
+        data1 = data
+        skus = OrderGoods.objects.filter(order_id__exact=order_id,sku_id__exact=data['sku'])
+        for sku in skus:
+            serilaizers = CommentSerializer(sku,data1)
+            serilaizers.is_valid()
+            serilaizers.save()
+            return Response(serilaizers.data)
+>>>>>>> 621091304585efefc60e9bd0f5bb3f33045bb9c8
