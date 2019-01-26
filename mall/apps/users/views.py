@@ -234,9 +234,9 @@ class MergeLoginAPIView(ObtainJSONWebToken):
             user = serializer.validated_data.get("user")
             # 合并购物车
             #merge_cart_cookie_to_redis(request, user, response)
-            responses = merge_cart_cookie_to_redis(request, user, response)
+            response = merge_cart_cookie_to_redis(request, user, response)
 
-        return responses
+        return response
 
 
 # 修改密码
@@ -443,6 +443,7 @@ class Forget_SMS_verification_code(APIView):
 
 # -------------------------重置密码-------------------------
 class Reset_password(APIView):
+
     def post(self,request,user_id):
 
         # 从redis中取出user_id

@@ -6,8 +6,6 @@ from rest_framework.viewsets import ReadOnlyModelViewSet
 from areas.models import Area
 from areas.serializers import AreaSerializer, SubsAreaSerialzier
 
-from rest_framework_extensions.cache.mixins import ListCacheResponseMixin
-from rest_framework_extensions.cache.mixins import RetrieveCacheResponseMixin
 from rest_framework_extensions.cache.mixins import CacheResponseMixin
 
 

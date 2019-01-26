@@ -211,7 +211,7 @@ var vm = new Vue({
             this.check_pwd();
             this.check_cpwd();
             if (this.error_password == false && this.error_check_password == false) {
-                axios.post(this.host + '/users/'+ this.user_id +'/password/', {
+                axios.post(this.host + '/users/'+ this.user_id +'/passwords/', {
                         password: this.password,
                         password2: this.password2,
                         access_token: this.access_token

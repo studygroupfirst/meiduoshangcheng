@@ -53,15 +53,15 @@ class OrderAPIViewSet(mixins.CreateModelMixin, mixins.ListModelMixin, GenericVie
 
     permission_classes = [IsAuthenticated]
 
-    def get_serializer(self, *args, **kwargs):
+    def get_serializer_class(self):
 
         if self.action == 'create':
 
-            return OrderSerializer(*args, **kwargs)
+            return OrderSerializer
 
         if self.action == 'list':
 
-            return UserInfoOrderSerializer(*args, **kwargs)
+            return UserInfoOrderSerializer
 
     def get_queryset(self):
 

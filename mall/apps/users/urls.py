@@ -28,7 +28,7 @@ urlpatterns = [
     url(r'sms_codes/',views.ForgetSMS.as_view()),
     url(r'accounts/(?P<username>.+)/password/token/',views.Forget_SMS_verification_code.as_view()),
     # 重置密码
-    url(r'(?P<user_id>.+)/password/',views.Reset_password.as_view())
+    url(r'(?P<user_id>.+)/passwords/',views.Reset_password.as_view())
 
 ]
 urlpatterns += router.urls

@@ -68,6 +68,7 @@ INSTALLED_APPS = [
     # 'reversion',
 ]
 
+
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
@@ -287,9 +288,10 @@ REST_FRAMEWORK_EXTENSIONS = {
     # 缓存时间
     'DEFAULT_CACHE_RESPONSE_TIMEOUT': 60 * 60,
     # 缓存存储
-    'DEFAULT_USE_CACHE': 'default',
+    'DEFAULT_USE_CACHE': 'default'
 
 }
+
 FDFS_URL = 'http://39.105.154.126:8888/'  # 访问图片的路径域名 ip地址修改为自己机器的ip地址
 FDFS_CLIENT_CONF = os.path.join(BASE_DIR, 'utils/fastdfs/client.conf')
 
@@ -340,3 +342,4 @@ ALIPAY_PUBLIC_KEY_PATH = os.path.join(BASE_DIR, 'apps/pay/keys/alipay_public_key
 WEIBO_CLIENT_ID = '3305669385'
 WEIBO_CLIENT_SECRET = '74c7bea69d5fc64f5c3b80c802325276'
 WEIBO_REDIRECT_URI = 'http://www.meiduo.site:8080/sina_callback.html'
+

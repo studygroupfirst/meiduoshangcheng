@@ -27,7 +27,7 @@ class OrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = OrderInfo
         fields = ('order_id', 'address', 'pay_method')
-        read_only_fields = ('order_id',)
+        read_only_fields = ['order_id']
         extra_kwargs = {
             'address': {
                 'write_only': True,
