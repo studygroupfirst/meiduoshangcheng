@@ -260,3 +260,235 @@ class UserPassWordView(APIView):
 
 
 
+
+
+from libs.captcha.captcha import captcha
+import re,random
+import json
+from libs.yuntongxun.sms import CCP
+from django.http import HttpResponse
+from users.utils import forget_verify_url,forget_token
+
+
+
+# ---------------------------------忘记密码--------------------------------
+class ForgetImageAPIView(APIView):
+
+    def get(self,request,image_code_id):
+        # 1.接收image_code_id
+        # 2.生成图片和验证码
+        text,image = captcha.generate_captcha()
+
+        # 3.把验证码保存到redis中
+        #3.1连接redis
+        redis_conn = get_redis_connection('code')
+        #3.2设置图片
+        redis_conn.setex('forget_img_'+image_code_id,600,text)
+        # 4.返回图片相应
+
+        return HttpResponse(image,content_type='image/jpeg')
+
+
+
+
+
+class ForgetUsernameAPIView(APIView):
+
+    def get(self,request,username):
+        # 判断用户是否注册
+        # 查询用户名的数量
+        # itcast 0   没有注册
+        # itcast 1   有注册
+        try:
+            if re.match(r'1[3-9]\d{9}',username):
+                # 手机号
+                user = User.objects.get(mobile=username)
+
+            else:
+                # 用户名
+                user = User.objects.get(username=username)
+        except User.DoesNotExist:
+            user = None
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        # user = User.objects.filter(username=username).count()
+        mobile = user.mobile
+        # 判断用户名是否存在
+        if user == 0:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        # 判断验证码是否正确
+        # 获取到用户输入的验证码
+        code_text = request.query_params['text']
+        # 获取到image_code_id
+        image_code_id = request.query_params['image_code_id']
+
+        redis_conn = get_redis_connection('code')
+        # 3.2设置图片
+        get_redis_code = redis_conn.get('forget_img_' + image_code_id)
+
+        if code_text.lower() != get_redis_code.decode().lower():
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+        # 加密token
+        token = forget_verify_url(mobile)
+
+        start = mobile[:3]
+        end = mobile[-4:]
+        mobile = ''.join([start,'*****',end])
+
+        json_data = json.dumps({
+            "mobile":mobile,
+            "access_token":token
+            })
+        # 返回数据
+        return Response(json_data)
+
+
+# 忘记密码实现短信发送
+class ForgetSMS(APIView):
+    def get(self,request):
+        # 获取token值
+        # 1. 接收token信息
+        token = request.query_params.get('access_token')
+        if token is None:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        # 2. 对token进行解析
+        mobile = forget_token(token)
+
+        if mobile is None:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        # 3. 解析获取user_id之后,进行查询
+        user = User.objects.get(mobile=mobile)
+        user_id = user.id
+
+        user_token = forget_verify_url(user_id)
+
+        # # 4. 修改状态
+        # user.save()
+        # 5. 返回相应
+        json_data = json.dumps({
+            "user_id": user_id,
+            "access_token": user_token
+        })
+
+        # 3.生成短信
+        sms_code = '%06d' % random.randint(0,999999)
+        # 4.将短信保存在redis中
+        redis_conn = get_redis_connection('code')
+
+        redis_conn.setex('forget_sms_' + mobile,5 * 60,sms_code)
+        # 5.使用云通讯发送短信
+        CCP().send_template_sms(mobile,[sms_code,5],1)
+
+
+        # 返回数据
+        return Response(json_data)
+
+
+# 短信验证码校验与手机号
+class Forget_SMS_verification_code(APIView):
+    '''
+    判断短信验证码是否一致
+
+    '''
+
+    def get(self,request,username):
+
+        try:
+            if re.match(r'1[3-9]\d{9}',username):
+                # 手机号
+                user = User.objects.get(mobile=username)
+
+            else:
+                # 用户名
+                user = User.objects.get(username=username)
+        except User.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        # 数据库中获取号码
+        mobile = user.mobile
+        user_id = user.id
+
+        # 从数据库中获取到加密后的密码
+        password = user.password
+
+
+
+        # 获取到前端发送过来的短信验证码
+        sms_code = request.query_params['sms_code']
+
+        # 获取到redis数据库中的短信验证码
+        redis_conn = get_redis_connection('code')
+        get_redis_code = redis_conn.get('forget_sms_' + mobile)
+
+        # 对短信验证码进行校验
+        if sms_code != get_redis_code.decode():
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+        # 4.将user_id保存在redis中
+        redis_conn.setex('forget_id_' + str(user_id),1 * 60,user_id)
+
+        # 向前端返回旧密码
+        # 5. 返回相应
+        json_data = json.dumps({
+            "access_token": password,
+            "user_id":user_id,
+        })
+
+        return Response(json_data)
+
+
+# -------------------------重置密码-------------------------
+class Reset_password(APIView):
+    def post(self,request,user_id):
+
+        # 从redis中取出user_id
+        redis_conn = get_redis_connection('code')
+        redis_user_id = redis_conn.get('forget_id_'+ str(user_id))
+
+        # 如果redis_user_id 值为空
+        if redis_user_id == None:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        if redis_user_id.decode() != user_id:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        # 1两次密码需要一致
+        password = request.data['password']
+        password2 = request.data['password2']
+        token = request.data['access_token']
+
+        if password != password2:
+            raise Response({"message":"密码不一致"})
+
+        try:
+            user = User.objects.get(id=user_id)
+        except User.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        # 2. 验证码用户密码
+        if user is not None and user.check_password(token):
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+
+
+        # 修改密码，调用django自带的加密算法，对密码进行加密存储
+        user.set_password(password)
+        user.save()
+        # 用户入库之后,我们生成token
+        from rest_framework_jwt.settings import api_settings
+
+        # 4.1 需要使用 jwt的2个方法
+        jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
+        jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
+
+        # 4.2 让payload(载荷 )盛放一些用户信息
+        payload = jwt_payload_handler(user)
+        token = jwt_encode_handler(payload)
+
+        user.token = token
+
+        return Response(status=status.HTTP_200_OK)
+
