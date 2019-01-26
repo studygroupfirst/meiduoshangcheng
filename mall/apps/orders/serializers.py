@@ -261,9 +261,18 @@ class ScoreOrderSerializer(serializers.ModelSerializer):
         model = OrderGoods
         fields = ('sku','comment','price','is_anonymous')
 
+
 class CommentSerializer(serializers.ModelSerializer):
     # sku = SkuSerializer()
     class Meta:
         model = OrderGoods
-        fields = ('score','comment','is_anonymous')
+        fields = ('score','comment','is_anonymous', 'is_commented')
 
+
+class CommentListSerializer(serializers.ModelSerializer):
+    # order=OrderInfoSerializer()
+    username = serializers.CharField(label='评价人',max_length=100,min_length=6)
+
+    class Meta:
+        model = OrderGoods
+        fields = ('score', 'comment','is_commented','username')

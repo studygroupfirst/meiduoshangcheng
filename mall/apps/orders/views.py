@@ -13,7 +13,7 @@ from rest_framework.viewsets import GenericViewSet
 
 from goods.models import SKU
 from orders.models import OrderInfo
-from orders.serializers import OrderPlaceSerializer, OrderSerializer, UserInfoOrderSerializer
+from orders.serializers import OrderPlaceSerializer, OrderSerializer, UserInfoOrderSerializer, CommentListSerializer
 from orders.models import OrderGoods
 from orders.serializers import ScoreOrderSerializer, CommentSerializer
 
@@ -114,18 +114,37 @@ data{
 
 class ScoreOrderView(APIView):
     def get(self,request,order_id):
-        skus =OrderGoods.objects.filter(order_id__exact=order_id)
-        serializers =  ScoreOrderSerializer(skus,many=True)
+        skus =OrderGoods.objects.filter(order_id__exact=order_id, is_commented=False)
+        serializers = ScoreOrderSerializer(skus,many=True)
         return Response(serializers.data)
 
+
 class CommentView(APIView):
+
     def post(self,request,order_id):
         data = request.data
         del data['order']
-        data1 = data
-        skus = OrderGoods.objects.filter(order_id__exact=order_id,sku_id__exact=data['sku'])
-        for sku in skus:
-            serilaizers = CommentSerializer(sku,data1)
-            serilaizers.is_valid()
-            serilaizers.save()
-            return Response(serilaizers.data)
+        data['is_commented'] = True
+        skus = OrderGoods.objects.filter(order_id__exact=order_id, sku_id__exact=data['sku'])
+        sku = skus[0]
+        ll = sku.order
+        ll.status = '5'
+        ll.save()
+        serilaizers = CommentSerializer(sku, data)
+        serilaizers.is_valid()
+        serilaizers.save()
+        return Response(serilaizers.data)
+
+
+class CommentListView(APIView):
+
+    def get(self,request,sku_id):
+        data = request.query_params
+        list1 = []
+        comments = OrderGoods.objects.filter(sku_id__exact=sku_id, is_commented=True)
+        for comment in comments:
+            comment.username = comment.order.user.username
+            list1.append(comment)
+
+        serializers = CommentListSerializer(list1,many=True)
+        return Response(serializers.data)

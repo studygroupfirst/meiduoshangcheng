@@ -19,5 +19,7 @@ urlpatterns = [
 
     url(r'^(?P<order_id>\d+)/uncommentgoods/$', views.ScoreOrderView.as_view()),
     url(r'^(?P<order_id>\d+)/comments/$', views.CommentView.as_view()),
+    url(r'^(?P<sku_id>\d+)/commentlists/$', views.CommentListView.as_view()),
+
 ]
 urlpatterns += router.urls
