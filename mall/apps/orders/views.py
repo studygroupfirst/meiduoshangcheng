@@ -9,7 +9,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from goods.models import SKU
-from orders.serializers import OrderPlaceSerializer, OrderSerializer
+from orders.models import OrderGoods
+from orders.serializers import OrderPlaceSerializer, OrderSerializer, ScoreOrderSerializer, CommentSerializer
 
 
 class PlaceOrderAPIView(APIView):
@@ -48,3 +49,21 @@ class OrderAPIView(CreateAPIView):
     permission_classes = [IsAuthenticated]
 
     serializer_class = OrderSerializer
+
+class ScoreOrderView(APIView):
+    def get(self,request,order_id):
+        skus =OrderGoods.objects.filter(order_id__exact=order_id)
+        serializers =  ScoreOrderSerializer(skus,many=True)
+        return Response(serializers.data)
+
+class CommentView(APIView):
+    def post(self,request,order_id):
+        data = request.data
+        del data['order']
+        data1 = data
+        skus = OrderGoods.objects.filter(order_id__exact=order_id,sku_id__exact=data['sku'])
+        for sku in skus:
+            serilaizers = CommentSerializer(sku,data1)
+            serilaizers.is_valid()
+            serilaizers.save()
+            return Response(serilaizers.data)
