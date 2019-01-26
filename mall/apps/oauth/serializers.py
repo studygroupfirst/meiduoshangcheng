@@ -2,7 +2,7 @@
 from django_redis import get_redis_connection
 from rest_framework import serializers
 
-from oauth.utils import check_access_token, weibo_access_token
+from oauth.utils import generic_access_token, weibo_access_token
 from users.models import User
 from .models import OAuthQQUser, OAuthWeiboUser
 
@@ -26,7 +26,7 @@ class OAuthQQUserSerializer(serializers.Serializer):
         # 1. 需要对加密的openid进行处理
         access_token = attrs.get('access_token')
         # 1.1 利用封装对openid进行解密
-        openid = check_access_token(access_token)
+        openid = generic_access_token(access_token)
 
         if openid is None:
             raise serializers.ValidationError('openid错误')

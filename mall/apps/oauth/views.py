@@ -10,7 +10,7 @@ from rest_framework import status
 
 from oauth.models import OAuthQQUser, OAuthWeiboUser
 from oauth.serializers import OAuthQQUserSerializer, WeiboOauthSerializers
-from oauth.utils import generic_open_id, generic_access_token
+from oauth.utils import check_save_user_token, generic_access_token
 
 """
 当用户点击qq按钮的时候,会发送一个请求,
@@ -103,7 +103,7 @@ class OAuthQQUserAPIView(APIView):
             # # 3. 让序列化器对数据进行处理
             # token = s.dumps(data)
 
-            token = generic_open_id(openid)
+            token = check_save_user_token(openid)
 
             return Response({'access_token': token})
 
