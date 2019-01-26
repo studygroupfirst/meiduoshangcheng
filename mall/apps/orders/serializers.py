@@ -220,3 +220,28 @@ class OrderSerializer(serializers.ModelSerializer):
         pl.execute()
 
         return order
+
+
+class SKUSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = SKU
+        fields = ('id', 'name', 'price', 'default_image_url', 'comments')
+class OrderGoodsSerializer(serializers.ModelSerializer):
+
+    sku = SKUSerializer()
+    class Meta:
+        model = OrderGoods
+        fields = ('sku', 'count', 'price', 'is_commented')
+
+class UserInfoOrderSerializer(serializers.ModelSerializer):
+
+    skus = OrderGoodsSerializer(many=True)
+    class Meta:
+        model = OrderInfo
+        fields = ['pay_method', 'status', 'order_id', 'create_time',
+                            'total_amount', 'total_count', 'skus', 'freight']
+        # read_only_fields = ['pay_method', 'status', 'order_id', 'create_time',
+        #                     'total_amount', 'total_count']
+
+

@@ -1,13 +1,21 @@
 from django.contrib import admin
-
-# Register your models here.
 from . import models
 
-from django.contrib import admin
-
 # Register your models here.
+from celery_tasks.html.tasks import generate_static_list_search_html
 
-from . import models
+class GoodsCategoryAdmin(admin.ModelAdmin):
+    def save_model(self, request, obj, form, change):
+        obj.save()
+
+        generate_static_list_search_html.delay()
+
+    def delete_model(self, request, obj):
+        # sku_id = obj.sku.id
+        obj.delete()
+        generate_static_list_search_html.delay()
+
+admin.site.register(models.GoodsCategory,GoodsCategoryAdmin)
 
 
 class SKUAdmin(admin.ModelAdmin):
@@ -48,6 +56,8 @@ class SKUImageAdmin(admin.ModelAdmin):
         from celery_tasks.html.tasks import generate_static_sku_detail_html
         generate_static_sku_detail_html.delay(sku_id)
 
+
+
 admin.site.register(models.GoodsChannel)
 admin.site.register(models.Goods)
 admin.site.register(models.Brand)
@@ -56,5 +66,3 @@ admin.site.register(models.SpecificationOption)
 admin.site.register(models.SKU, SKUAdmin)
 admin.site.register(models.SKUSpecification, SKUSpecificationAdmin)
 admin.site.register(models.SKUImage, SKUImageAdmin)
-
-admin.site.register(models.GoodsCategory)

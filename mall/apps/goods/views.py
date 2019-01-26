@@ -12,7 +12,7 @@ class HotSKUListView(ListCacheResponseMixin, ListAPIView):
     GET /goods/categories/(?P<category_id>\d+)/hotskus/
     """
     serializer_class = SKUSerializer
-    pagination_class = StandardResultsSetPagination
+    pagination_class = None
 
     def get_queryset(self):
         category_id = self.kwargs['category_id']
