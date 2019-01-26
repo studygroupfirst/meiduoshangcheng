@@ -1,7 +1,5 @@
 from decimal import Decimal
 
-from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
-from django.shortcuts import render
 
 # Create your views here.
 from django_redis import get_redis_connection
@@ -14,13 +12,10 @@ from rest_framework.views import APIView
 from rest_framework.viewsets import GenericViewSet
 
 from goods.models import SKU
-<<<<<<< HEAD
 from orders.models import OrderInfo
 from orders.serializers import OrderPlaceSerializer, OrderSerializer, UserInfoOrderSerializer
-=======
 from orders.models import OrderGoods
-from orders.serializers import OrderPlaceSerializer, OrderSerializer, ScoreOrderSerializer, CommentSerializer
->>>>>>> 621091304585efefc60e9bd0f5bb3f33045bb9c8
+from orders.serializers import ScoreOrderSerializer, CommentSerializer
 
 
 class PlaceOrderAPIView(APIView):
@@ -58,7 +53,6 @@ class OrderAPIViewSet(mixins.CreateModelMixin, mixins.ListModelMixin, GenericVie
 
     permission_classes = [IsAuthenticated]
 
-<<<<<<< HEAD
     def get_serializer(self, *args, **kwargs):
 
         if self.action == 'create':
@@ -116,7 +110,6 @@ data{
     count, resutls,
 }
 """
-=======
 
 
 class ScoreOrderView(APIView):
@@ -136,4 +129,3 @@ class CommentView(APIView):
             serilaizers.is_valid()
             serilaizers.save()
             return Response(serilaizers.data)
->>>>>>> 621091304585efefc60e9bd0f5bb3f33045bb9c8

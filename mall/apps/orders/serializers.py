@@ -222,7 +222,7 @@ class OrderSerializer(serializers.ModelSerializer):
         return order
 
 
-<<<<<<< HEAD
+
 class SKUInfoSerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -246,7 +246,7 @@ class UserInfoOrderSerializer(serializers.ModelSerializer):
         #                     'total_amount', 'total_count']
 
 
-=======
+
 class SkuSerializer(serializers.ModelSerializer):
 
 
@@ -266,4 +266,4 @@ class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = OrderGoods
         fields = ('score','comment','is_anonymous')
->>>>>>> 621091304585efefc60e9bd0f5bb3f33045bb9c8
+
