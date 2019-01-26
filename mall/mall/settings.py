@@ -334,3 +334,9 @@ ALIPAY_URL = "https://openapi.alipaydev.com/gateway.do"
 ALIPAY_DEBUG = True
 APP_PRIVATE_KEY_PATH = os.path.join(BASE_DIR, 'apps/pay/keys/app_private_key.pem')
 ALIPAY_PUBLIC_KEY_PATH = os.path.join(BASE_DIR, 'apps/pay/keys/alipay_public_key.pem')
+
+
+# 微博登录的参数
+WEIBO_CLIENT_ID = '3305669385'
+WEIBO_CLIENT_SECRET = '74c7bea69d5fc64f5c3b80c802325276'
+WEIBO_REDIRECT_URI = 'http://www.meiduo.site:8080/sina_callback.html'
