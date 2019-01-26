@@ -72,7 +72,7 @@ var vm = new Vue({
                         if (!return_url) {
                             return_url = '/index.html';
                         }
-                        location.href = return_url;
+                         location.href = return_url;
                     })
                     .catch(error => {
                         this.error_pwd_message = '用户名或密码错误';
@@ -85,8 +85,7 @@ var vm = new Vue({
         qq_login: function(){
             var state = this.get_query_string('next') || '/';
             axios.get(this.host + '/oauth/qq/statues/?state=' + state, {
-                    responseType: 'json',
-                    withCredentials: true
+                    responseType: 'json'
                 })
                 .then(response => {
                     location.href = response.data.auth_url;
@@ -94,7 +93,19 @@ var vm = new Vue({
                 .catch(error => {
                     console.log(error.response.data);
                 })
+        },
+       weibo_login: function(){
+            var next = this.get_query_string('next') || '/';
+            axios.get(this.host + '/oauth/weibo/authorization/?next=' + next, {
+                    responseType: 'json',
+                    withCredentials: true
+                })
+                .then(response => {
+                    location.href = response.data.login_url;
+                })
+                .catch(error => {
+                    console.log(error.response.data);
+                })
         }
-
     }
 });
