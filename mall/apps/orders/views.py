@@ -70,48 +70,6 @@ class OrderAPIViewSet(mixins.CreateModelMixin, mixins.ListModelMixin, GenericVie
             return OrderInfo.objects.filter(user=self.request.user).all().order_by('-create_time')
 
 
-# class InfoOrderAPIView(ListAPIView):
-#
-#     serializer_class =
-
-    # def get(self, request):
-    #
-    #     user = request.user
-    #
-    #     try:
-    #         orders = OrderInfo.objects.filter(user=user).all().order_by('-create_time')
-    #         count = OrderInfo.objects.filter(user=user).count()
-    #     except OrderInfo.DoesNotExist:
-    #         return Response(status=status.HTTP_204_NO_CONTENT)
-    #
-    #     paginator = Paginator(orders, 5)
-    #     page = request.GET.get('page')
-    #     try:
-    #         orders = paginator.page(page)
-    #     except PageNotAnInteger:
-    #         # 如果page不是整数，则展示第1页
-    #         orders = paginator.page(1)
-    #     except EmptyPage:
-    #         # 如果page超过范围，则展示最后一页
-    #         orders = paginator.page(paginator.num_pages)
-    #
-    #     serializer = UserInfoOrderSerializer(orders, many=True)
-    #
-    #     data = {
-    #         'count': count,
-    #         'results': serializer.data
-    #     }
-    #
-    #     return Response(data)
-
-
-"""
-data{
-    count, resutls,
-}
-"""
-
-
 class ScoreOrderView(APIView):
     def get(self,request,order_id):
         skus =OrderGoods.objects.filter(order_id__exact=order_id, is_commented=False)

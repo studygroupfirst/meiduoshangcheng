@@ -254,7 +254,8 @@ CORS_ORIGIN_WHITELIST = (
     '127.0.0.1:8080',
     'localhost:8080',
     'www.meiduo.site:8080',
-
+    'api.meiduo.site:8000',
+    'www.meiduo.site',  # 添加
 )
 
 CORS_ALLOW_CREDENTIALS = True
@@ -343,3 +344,4 @@ WEIBO_CLIENT_ID = '3305669385'
 WEIBO_CLIENT_SECRET = '74c7bea69d5fc64f5c3b80c802325276'
 WEIBO_REDIRECT_URI = 'http://www.meiduo.site:8080/sina_callback.html'
 
+STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'front/static')
